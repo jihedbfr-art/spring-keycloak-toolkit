@@ -1,5 +1,8 @@
 # spring-keycloak-toolkit
 
+[![JitPack](https://jitpack.io/v/jihedbfr-art/spring-keycloak-toolkit.svg)](https://jitpack.io/#jihedbfr-art/spring-keycloak-toolkit)
+[![CI](https://github.com/jihedbfr-art/spring-keycloak-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/jihedbfr-art/spring-keycloak-toolkit/actions)
+
 Small Spring Boot auto-configuration for apps that sit behind Keycloak as a resource server.
 It fixes the one thing that trips up almost every Spring + Keycloak setup: Spring Security's
 default JWT converter has no idea that Keycloak puts roles under `realm_access.roles` and
@@ -31,7 +34,27 @@ silently is worse than writing four lines of config yourself.
 
 ## Install
 
-Not on Maven Central yet — for now, build and install locally:
+Via [JitPack](https://jitpack.io/#jihedbfr-art/spring-keycloak-toolkit) — add the JitPack repo,
+then pull the tag as a dependency:
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+```xml
+<dependency>
+    <groupId>com.github.jihedbfr-art</groupId>
+    <artifactId>spring-keycloak-toolkit</artifactId>
+    <version>v0.1.0</version>
+</dependency>
+```
+
+Or build and install locally:
 
 ```bash
 git clone https://github.com/jihedbfr-art/spring-keycloak-toolkit.git
