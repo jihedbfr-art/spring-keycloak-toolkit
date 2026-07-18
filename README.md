@@ -124,7 +124,8 @@ Things I want to add once this has seen a bit more real use rather than guessing
 - multi-tenant support (more than one `resource-id` at a time)
 - a test fixture module (`JwtTestUtils` or similar) so consumers don't hand-roll fake JWTs the way
   the tests in this repo do
-- Maven Central publishing once GPG signing is set up
+- Maven Central publishing — the `release` profile in `pom.xml` is wired up (signing +
+  Central Portal), just waiting on a Sonatype account and a GPG keypair
 
 ## License
 
