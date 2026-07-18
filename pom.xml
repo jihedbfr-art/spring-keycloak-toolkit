@@ -142,4 +142,50 @@
         </plugins>
     </build>
 
+    <!--
+        Maven Central publishing, kept behind a profile so a plain `mvn test`/`package` never
+        touches GPG or the network. Activate with `mvn clean deploy -Prelease` once:
+          1. a Sonatype Central Portal account exists for this namespace (central.sonatype.com)
+          2. a GPG keypair is generated and the public key pushed to a keyserver
+          3. ~/.m2/settings.xml has the Central Portal token (server id "central") and the GPG
+             passphrase (server id "gpg.passphrase") — never committed here
+        Central requires proof of ownership of the groupId's namespace. `com.jihedapps` only
+        verifies if that domain is actually owned; otherwise switch groupId to
+        `io.github.jihedbfr-art`, which Central verifies against the GitHub account instead —
+        that's a coordinate change across all three published repos, decide before running this.
+    -->
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>false</autoPublish>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
