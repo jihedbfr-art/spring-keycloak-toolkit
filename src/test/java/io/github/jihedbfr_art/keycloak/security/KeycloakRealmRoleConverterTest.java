@@ -1,4 +1,4 @@
-package com.jihedapps.keycloak.security;
+package io.github.jihedbfr_art.keycloak.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,6 +58,14 @@ class KeycloakRealmRoleConverterTest {
 
         KeycloakRealmRoleConverter converter = new KeycloakRealmRoleConverter(true, true, "ROLE_", "my-client");
         Collection<GrantedAuthority> authorities = converter.convert(jwt);
+
+        assertThat(authorities).isEmpty();
+    }
+
+    @Test
+    void returnsEmptySetWhenJwtIsNull() {
+        KeycloakRealmRoleConverter converter = new KeycloakRealmRoleConverter(true, true, "ROLE_", "my-client");
+        Collection<GrantedAuthority> authorities = converter.convert(null);
 
         assertThat(authorities).isEmpty();
     }

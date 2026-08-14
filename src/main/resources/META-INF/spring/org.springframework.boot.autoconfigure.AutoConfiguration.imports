@@ -1,1 +1,1 @@
-com.jihedapps.keycloak.autoconfigure.KeycloakToolkitAutoConfiguration
+io.github.jihedbfr_art.keycloak.autoconfigure.KeycloakToolkitAutoConfiguration

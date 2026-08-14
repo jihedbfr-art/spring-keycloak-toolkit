@@ -1,12 +1,12 @@
-package com.jihedapps.keycloak.autoconfigure;
+package io.github.jihedbfr_art.keycloak.autoconfigure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.jihedapps.keycloak.error.ProblemDetailAccessDeniedHandler;
-import com.jihedapps.keycloak.error.ProblemDetailAuthenticationEntryPoint;
-import com.jihedapps.keycloak.security.KeycloakRealmRoleConverter;
+import io.github.jihedbfr_art.keycloak.error.ProblemDetailAccessDeniedHandler;
+import io.github.jihedbfr_art.keycloak.error.ProblemDetailAuthenticationEntryPoint;
+import io.github.jihedbfr_art.keycloak.security.KeycloakRealmRoleConverter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -30,13 +30,16 @@ class KeycloakToolkitAutoConfigurationTest {
             assertThat(context).hasSingleBean(JwtAuthenticationConverter.class);
             assertThat(context).hasSingleBean(ProblemDetailAuthenticationEntryPoint.class);
             assertThat(context).hasSingleBean(ProblemDetailAccessDeniedHandler.class);
+            assertThat(context).hasSingleBean(KeycloakToolkitProperties.class);
         });
     }
 
     @Test
     void backsOffProblemDetailBeansWhenDisabled() {
-        contextRunner.withPropertyValues("jihedapps.keycloak-toolkit.problem-details-enabled=false")
+        contextRunner.withPropertyValues("jihedailabs.keycloak.problem-details-enabled=false")
                 .run(context -> {
+                    assertThat(context).hasSingleBean(KeycloakRealmRoleConverter.class);
+                    assertThat(context).hasSingleBean(JwtAuthenticationConverter.class);
                     assertThat(context).doesNotHaveBean(ProblemDetailAuthenticationEntryPoint.class);
                     assertThat(context).doesNotHaveBean(ProblemDetailAccessDeniedHandler.class);
                 });
@@ -49,7 +52,25 @@ class KeycloakToolkitAutoConfigurationTest {
                     assertThat(context).hasSingleBean(KeycloakRealmRoleConverter.class);
                     assertThat(context.getBean(KeycloakRealmRoleConverter.class))
                             .isSameAs(CustomConverterConfiguration.CUSTOM_INSTANCE);
+                    assertThat(context).hasSingleBean(JwtAuthenticationConverter.class);
                 });
+    }
+
+    @Test
+    void bindsCustomConfigurationProperties() {
+        contextRunner.withPropertyValues(
+                "jihedailabs.keycloak.realm-roles-enabled=false",
+                "jihedailabs.keycloak.resource-roles-enabled=true",
+                "jihedailabs.keycloak.resource-id=my-service",
+                "jihedailabs.keycloak.role-prefix=CUSTOM_"
+        ).run(context -> {
+            assertThat(context).hasSingleBean(KeycloakToolkitProperties.class);
+            KeycloakToolkitProperties props = context.getBean(KeycloakToolkitProperties.class);
+            assertThat(props.isRealmRolesEnabled()).isFalse();
+            assertThat(props.isResourceRolesEnabled()).isTrue();
+            assertThat(props.getResourceId()).isEqualTo("my-service");
+            assertThat(props.getRolePrefix()).isEqualTo("CUSTOM_");
+        });
     }
 
     @Configuration

@@ -1,6 +1,7 @@
-package com.jihedapps.keycloak.security;
+package io.github.jihedbfr_art.keycloak.security;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -14,13 +15,17 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 /**
- * Maps a Keycloak access token onto Spring Security authorities.
+ * Converts Keycloak JWT access token claims into a collection of Spring Security {@link GrantedAuthority}.
  *
- * <p>Keycloak does not put roles in the {@code scope} claim the way
- * {@link org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter}
- * expects. Realm roles live under {@code realm_access.roles} and client roles under
- * {@code resource_access.<clientId>.roles}. This converter reads both and turns them into
- * {@code ROLE_*} authorities, which is what {@code hasRole(...)} / {@code @PreAuthorize} expect.
+ * <p>Keycloak stores roles in structured token claims rather than the flat {@code scope} claim:
+ * <ul>
+ *   <li>Realm-level roles live under {@code realm_access.roles}.</li>
+ *   <li>Client-level roles live under {@code resource_access.<clientId>.roles}.</li>
+ * </ul>
+ *
+ * <p>This converter extracts roles from either or both locations and prefixes each with a configurable
+ * authority prefix (defaults to {@code ROLE_}), converting values to uppercase to match standard
+ * Spring Security authorization rules such as {@code hasRole("ADMIN")} or {@code @PreAuthorize("hasRole('ADMIN')")}.
  */
 public class KeycloakRealmRoleConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
 
@@ -33,16 +38,34 @@ public class KeycloakRealmRoleConverter implements Converter<Jwt, Collection<Gra
     private final String rolePrefix;
     private final String resourceId;
 
+    /**
+     * Constructs a new {@code KeycloakRealmRoleConverter} with the specified extraction settings.
+     *
+     * @param realmRolesEnabled    whether to extract realm-level roles from {@code realm_access.roles}
+     * @param resourceRolesEnabled whether to extract client-level roles from {@code resource_access.<resourceId>.roles}
+     * @param rolePrefix           the authority prefix to prepend to each role (e.g. {@code "ROLE_"})
+     * @param resourceId           the Keycloak client ID for resource-level role extraction, or {@code null} to skip
+     */
     public KeycloakRealmRoleConverter(boolean realmRolesEnabled, boolean resourceRolesEnabled,
                                        String rolePrefix, String resourceId) {
         this.realmRolesEnabled = realmRolesEnabled;
         this.resourceRolesEnabled = resourceRolesEnabled;
-        this.rolePrefix = rolePrefix;
+        this.rolePrefix = rolePrefix != null ? rolePrefix : "ROLE_";
         this.resourceId = resourceId;
     }
 
+    /**
+     * Converts the given JWT access token into a collection of {@link GrantedAuthority}.
+     *
+     * @param jwt the source JWT access token to extract roles from
+     * @return an unmodifiable collection of granted authorities mapped from the token roles
+     */
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
+        if (jwt == null) {
+            return Collections.emptySet();
+        }
+
         Set<String> roles = new LinkedHashSet<>();
 
         if (realmRolesEnabled) {
@@ -63,9 +86,15 @@ public class KeycloakRealmRoleConverter implements Converter<Jwt, Collection<Gra
                 .collect(Collectors.toUnmodifiableSet());
     }
 
+    /**
+     * Extracts the string list of roles from an access claim map.
+     *
+     * @param access the access claim map containing a {@code roles} list
+     * @return a collection of role names, or an empty set if absent
+     */
     private Collection<String> rolesFrom(Map<String, Object> access) {
         if (access == null || !(access.get(ROLES_CLAIM) instanceof List<?> roles)) {
-            return Set.of();
+            return Collections.emptySet();
         }
         return roles.stream().map(String::valueOf).collect(Collectors.toSet());
     }
