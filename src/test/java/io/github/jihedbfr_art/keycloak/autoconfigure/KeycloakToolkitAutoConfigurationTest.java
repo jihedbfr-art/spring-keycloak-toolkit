@@ -85,13 +85,12 @@ class KeycloakToolkitAutoConfigurationTest {
     }
 
     @Test
-    void failsContextStartupWhenRolePrefixIsBlankWithoutRequiringBeanValidator() {
-        contextRunner.withPropertyValues("jihedailabs.keycloak.role-prefix=   ")
+    void allowsEmptyStringRolePrefix() {
+        contextRunner.withPropertyValues("jihedailabs.keycloak.role-prefix=")
                 .run(context -> {
-                    assertThat(context).hasFailed();
-                    assertThat(context.getStartupFailure())
-                            .hasRootCauseInstanceOf(IllegalArgumentException.class)
-                            .hasRootCauseMessage("Property 'jihedailabs.keycloak.role-prefix' must not be blank.");
+                    assertThat(context).hasNotFailed();
+                    KeycloakToolkitProperties props = context.getBean(KeycloakToolkitProperties.class);
+                    assertThat(props.getRolePrefix()).isEqualTo("");
                 });
     }
 

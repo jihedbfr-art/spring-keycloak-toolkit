@@ -84,4 +84,18 @@ class KeycloakRealmRoleConverterTest {
                 .extracting(GrantedAuthority::getAuthority)
                 .containsExactlyInAnyOrder("ROLE_APP-ADMIN", "ROLE_EDITOR");
     }
+
+    @Test
+    void mapsRolesWithoutPrefixWhenRolePrefixIsEmpty() {
+        Jwt jwt = jwtWith(Map.of(
+                "realm_access", Map.of("roles", java.util.List.of("app-admin", "viewer"))
+        ));
+
+        KeycloakRealmRoleConverter converter = new KeycloakRealmRoleConverter(true, false, "", null);
+        Collection<GrantedAuthority> authorities = converter.convert(jwt);
+
+        assertThat(authorities)
+                .extracting(GrantedAuthority::getAuthority)
+                .containsExactlyInAnyOrder("APP-ADMIN", "VIEWER");
+    }
 }

@@ -56,11 +56,14 @@ public class KeycloakToolkitProperties implements InitializingBean {
     /**
      * Validates property values programmatically.
      *
-     * @throws IllegalArgumentException if {@code rolePrefix} is null or blank
+     * <p>Empty strings ({@code ""}) are permitted for un-prefixed authority mapping (e.g. for {@code hasAuthority()}),
+     * but {@code null} or whitespace-only values are rejected.
+     *
+     * @throws IllegalArgumentException if {@code rolePrefix} is null or whitespace-only
      */
     public void validate() {
-        if (rolePrefix == null || rolePrefix.isBlank()) {
-            throw new IllegalArgumentException("Property 'jihedailabs.keycloak.role-prefix' must not be blank.");
+        if (rolePrefix == null || (!rolePrefix.isEmpty() && rolePrefix.isBlank())) {
+            throw new IllegalArgumentException("Property 'jihedailabs.keycloak.role-prefix' must not be null or whitespace-only.");
         }
     }
 
@@ -112,10 +115,15 @@ public class KeycloakToolkitProperties implements InitializingBean {
     /**
      * Sets the authority prefix applied to each mapped role.
      *
-     * @param rolePrefix the authority prefix to use (must not be blank)
+     * <p>An empty string ({@code ""}) is allowed to map unprefixed roles, but {@code null} or whitespace-only
+     * strings will throw an {@link IllegalArgumentException}.
+     *
+     * @param rolePrefix the authority prefix to use
+     * @throws IllegalArgumentException if {@code rolePrefix} is null or whitespace-only
      */
     public void setRolePrefix(String rolePrefix) {
         this.rolePrefix = rolePrefix;
+        validate();
     }
 
     /**

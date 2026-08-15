@@ -42,7 +42,6 @@ public class KeycloakToolkitAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public KeycloakRealmRoleConverter keycloakRealmRoleConverter(KeycloakToolkitProperties properties) {
-        properties.validate();
         return new KeycloakRealmRoleConverter(
                 properties.isRealmRolesEnabled(),
                 properties.isResourceRolesEnabled(),
