@@ -24,13 +24,21 @@ class KeycloakToolkitAutoConfigurationTest {
                     KeycloakToolkitAutoConfiguration.class));
 
     @Test
-    void registersDefaultBeansWhenNothingElseDefinesThem() {
+    void startsSuccessfullyWithEmptyConfiguration() {
         contextRunner.run(context -> {
+            assertThat(context).hasNotFailed();
             assertThat(context).hasSingleBean(KeycloakRealmRoleConverter.class);
             assertThat(context).hasSingleBean(JwtAuthenticationConverter.class);
             assertThat(context).hasSingleBean(ProblemDetailAuthenticationEntryPoint.class);
             assertThat(context).hasSingleBean(ProblemDetailAccessDeniedHandler.class);
             assertThat(context).hasSingleBean(KeycloakToolkitProperties.class);
+
+            KeycloakToolkitProperties properties = context.getBean(KeycloakToolkitProperties.class);
+            assertThat(properties.isRealmRolesEnabled()).isTrue();
+            assertThat(properties.isResourceRolesEnabled()).isTrue();
+            assertThat(properties.getResourceId()).isNull();
+            assertThat(properties.getRolePrefix()).isEqualTo("ROLE_");
+            assertThat(properties.isProblemDetailsEnabled()).isTrue();
         });
     }
 
@@ -38,6 +46,7 @@ class KeycloakToolkitAutoConfigurationTest {
     void backsOffProblemDetailBeansWhenDisabled() {
         contextRunner.withPropertyValues("jihedailabs.keycloak.problem-details-enabled=false")
                 .run(context -> {
+                    assertThat(context).hasNotFailed();
                     assertThat(context).hasSingleBean(KeycloakRealmRoleConverter.class);
                     assertThat(context).hasSingleBean(JwtAuthenticationConverter.class);
                     assertThat(context).doesNotHaveBean(ProblemDetailAuthenticationEntryPoint.class);
@@ -49,6 +58,7 @@ class KeycloakToolkitAutoConfigurationTest {
     void backsOffWhenApplicationDefinesItsOwnConverter() {
         contextRunner.withUserConfiguration(CustomConverterConfiguration.class)
                 .run(context -> {
+                    assertThat(context).hasNotFailed();
                     assertThat(context).hasSingleBean(KeycloakRealmRoleConverter.class);
                     assertThat(context.getBean(KeycloakRealmRoleConverter.class))
                             .isSameAs(CustomConverterConfiguration.CUSTOM_INSTANCE);
@@ -64,6 +74,7 @@ class KeycloakToolkitAutoConfigurationTest {
                 "jihedailabs.keycloak.resource-id=my-service",
                 "jihedailabs.keycloak.role-prefix=CUSTOM_"
         ).run(context -> {
+            assertThat(context).hasNotFailed();
             assertThat(context).hasSingleBean(KeycloakToolkitProperties.class);
             KeycloakToolkitProperties props = context.getBean(KeycloakToolkitProperties.class);
             assertThat(props.isRealmRolesEnabled()).isFalse();
@@ -71,6 +82,17 @@ class KeycloakToolkitAutoConfigurationTest {
             assertThat(props.getResourceId()).isEqualTo("my-service");
             assertThat(props.getRolePrefix()).isEqualTo("CUSTOM_");
         });
+    }
+
+    @Test
+    void failsContextStartupWhenRolePrefixIsBlankWithoutRequiringBeanValidator() {
+        contextRunner.withPropertyValues("jihedailabs.keycloak.role-prefix=   ")
+                .run(context -> {
+                    assertThat(context).hasFailed();
+                    assertThat(context.getStartupFailure())
+                            .hasRootCauseInstanceOf(IllegalArgumentException.class)
+                            .hasRootCauseMessage("Property 'jihedailabs.keycloak.role-prefix' must not be blank.");
+                });
     }
 
     @Configuration

@@ -1,18 +1,15 @@
 package io.github.jihedbfr_art.keycloak.autoconfigure;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
-
-import jakarta.validation.constraints.NotBlank;
 
 /**
  * Configuration properties for the Keycloak Toolkit Spring Boot starter.
  *
  * <p>All properties are bound under the prefix {@code jihedailabs.keycloak}.
  */
-@Validated
 @ConfigurationProperties(prefix = "jihedailabs.keycloak")
-public class KeycloakToolkitProperties {
+public class KeycloakToolkitProperties implements InitializingBean {
 
     /**
      * Whether to extract realm-level roles from {@code realm_access.roles} in the incoming JWT.
@@ -28,7 +25,6 @@ public class KeycloakToolkitProperties {
     /**
      * Authority prefix applied to extracted roles (e.g. {@code "ROLE_"}), matching Spring Security conventions.
      */
-    @NotBlank(message = "rolePrefix must not be blank")
     private String rolePrefix = "ROLE_";
 
     /**
@@ -46,6 +42,26 @@ public class KeycloakToolkitProperties {
      * Default constructor for Spring Boot configuration properties binding.
      */
     public KeycloakToolkitProperties() {
+    }
+
+    /**
+     * Enforces programmatic validation of properties upon bean initialization,
+     * ensuring validation is guaranteed across all environments without external JSR-303 providers.
+     */
+    @Override
+    public void afterPropertiesSet() {
+        validate();
+    }
+
+    /**
+     * Validates property values programmatically.
+     *
+     * @throws IllegalArgumentException if {@code rolePrefix} is null or blank
+     */
+    public void validate() {
+        if (rolePrefix == null || rolePrefix.isBlank()) {
+            throw new IllegalArgumentException("Property 'jihedailabs.keycloak.role-prefix' must not be blank.");
+        }
     }
 
     /**
