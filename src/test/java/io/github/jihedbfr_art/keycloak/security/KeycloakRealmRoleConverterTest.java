@@ -1,4 +1,4 @@
-package com.jihedapps.keycloak.security;
+package io.github.jihedbfr_art.keycloak.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,6 +63,14 @@ class KeycloakRealmRoleConverterTest {
     }
 
     @Test
+    void returnsEmptySetWhenJwtIsNull() {
+        KeycloakRealmRoleConverter converter = new KeycloakRealmRoleConverter(true, true, "ROLE_", "my-client");
+        Collection<GrantedAuthority> authorities = converter.convert(null);
+
+        assertThat(authorities).isEmpty();
+    }
+
+    @Test
     void combinesRealmAndResourceRolesWhenBothEnabled() {
         Jwt jwt = jwtWith(Map.of(
                 "realm_access", Map.of("roles", java.util.List.of("app-admin")),
@@ -75,5 +83,19 @@ class KeycloakRealmRoleConverterTest {
         assertThat(authorities)
                 .extracting(GrantedAuthority::getAuthority)
                 .containsExactlyInAnyOrder("ROLE_APP-ADMIN", "ROLE_EDITOR");
+    }
+
+    @Test
+    void mapsRolesWithoutPrefixWhenRolePrefixIsEmpty() {
+        Jwt jwt = jwtWith(Map.of(
+                "realm_access", Map.of("roles", java.util.List.of("app-admin", "viewer"))
+        ));
+
+        KeycloakRealmRoleConverter converter = new KeycloakRealmRoleConverter(true, false, "", null);
+        Collection<GrantedAuthority> authorities = converter.convert(jwt);
+
+        assertThat(authorities)
+                .extracting(GrantedAuthority::getAuthority)
+                .containsExactlyInAnyOrder("APP-ADMIN", "VIEWER");
     }
 }

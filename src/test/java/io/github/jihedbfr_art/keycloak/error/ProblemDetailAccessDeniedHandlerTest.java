@@ -1,4 +1,4 @@
-package com.jihedapps.keycloak.error;
+package io.github.jihedbfr_art.keycloak.error;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,6 +27,7 @@ class ProblemDetailAccessDeniedHandlerTest {
 
         String body = response.getContentAsString();
         assertThat(body).contains("\"status\":403");
+        assertThat(body).contains("\"title\":\"Forbidden\"");
         assertThat(body).contains("\"path\":\"/api/orders/42\"");
     }
 }
