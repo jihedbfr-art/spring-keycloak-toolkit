@@ -15,17 +15,20 @@ jobs:
       matrix:
         include:
           - java: "17"
-            spring-boot: "3.2.5"
-            keycloak: "25.0.6"
+            spring-boot: "4.1.0"
+            keycloak: "26.7.1"
           - java: "17"
-            spring-boot: "3.3.5"
-            keycloak: "25.0.6"
+            spring-boot: "4.0.7"
+            keycloak: "26.7.1"
           - java: "21"
-            spring-boot: "3.3.5"
-            keycloak: "26.0.0"
+            spring-boot: "4.1.0"
+            keycloak: "26.7.1"
           - java: "21"
-            spring-boot: "3.4.0"
-            keycloak: "26.0.0"
+            spring-boot: "4.0.7"
+            keycloak: "26.7.1"
+          - java: "17"
+            spring-boot: "3.5.16"
+            keycloak: "26.7.1"
     steps:
       - uses: actions/checkout@v4
 
@@ -43,7 +46,7 @@ jobs:
           -Dkeycloak.container.image=quay.io/keycloak/keycloak:${{ matrix.keycloak }}
 
       - name: Upload JaCoCo coverage report
-        if: matrix.java == '17' && matrix.spring-boot == '3.2.5'
+        if: matrix.java == '17' && matrix.spring-boot == '4.1.0'
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
