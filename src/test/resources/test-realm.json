@@ -2,6 +2,11 @@
   "id": "test-realm",
   "realm": "test-realm",
   "enabled": true,
+  "verifyEmail": false,
+  "resetPasswordAllowed": false,
+  "requiredCredentials": [
+    "password"
+  ],
   "roles": {
     "realm": [
       {
@@ -41,6 +46,9 @@
     {
       "username": "alice",
       "enabled": true,
+      "emailVerified": true,
+      "email": "alice@test.local",
+      "requiredActions": [],
       "credentials": [
         {
           "type": "password",
@@ -60,6 +68,9 @@
     {
       "username": "bob",
       "enabled": true,
+      "emailVerified": true,
+      "email": "bob@test.local",
+      "requiredActions": [],
       "credentials": [
         {
           "type": "password",

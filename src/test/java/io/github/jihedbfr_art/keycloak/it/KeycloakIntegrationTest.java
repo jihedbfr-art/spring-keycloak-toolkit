@@ -48,12 +48,16 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-@SpringBootTest(classes = KeycloakIntegrationTest.TestApplication.class)
+@SpringBootTest(classes = {
+        KeycloakIntegrationTest.TestApplication.class,
+        KeycloakIntegrationTest.TestSecurityConfig.class,
+        KeycloakIntegrationTest.TestApiController.class
+})
 @AutoConfigureMockMvc
 class KeycloakIntegrationTest {
 
     private static final String KEYCLOAK_IMAGE =
-            System.getProperty("keycloak.container.image", "quay.io/keycloak/keycloak:24.0.5");
+            System.getProperty("keycloak.container.image", "quay.io/keycloak/keycloak:25.0.6");
 
     @Container
     private static final KeycloakContainer KEYCLOAK =
@@ -161,15 +165,31 @@ class KeycloakIntegrationTest {
     static class TestSecurityConfig {
 
         @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                       ProblemDetailAuthenticationEntryPoint entryPoint,
-                                                       ProblemDetailAccessDeniedHandler accessDeniedHandler) throws Exception {
+        public org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter jwtAuthenticationConverter(
+                io.github.jihedbfr_art.keycloak.security.KeycloakRealmRoleConverter roleConverter) {
+            org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter converter =
+                    new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter();
+            converter.setJwtGrantedAuthoritiesConverter(roleConverter);
+            return converter;
+        }
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(
+                HttpSecurity http,
+                org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter jwtAuthenticationConverter,
+                ProblemDetailAuthenticationEntryPoint entryPoint,
+                ProblemDetailAccessDeniedHandler accessDeniedHandler) throws Exception {
             http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/public").permitAll()
                     .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                    .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
+                    .authenticationEntryPoint(entryPoint)
+                    .accessDeniedHandler(accessDeniedHandler)
+                )
                 .exceptionHandling(exceptions -> exceptions
                     .authenticationEntryPoint(entryPoint)
                     .accessDeniedHandler(accessDeniedHandler)
