@@ -1,0 +1,82 @@
+{
+  "id": "test-realm",
+  "realm": "test-realm",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "admin",
+        "description": "Administrator realm role"
+      },
+      {
+        "name": "user",
+        "description": "Standard user realm role"
+      }
+    ],
+    "client": {
+      "test-client": [
+        {
+          "name": "manager",
+          "description": "Client manager role"
+        },
+        {
+          "name": "editor",
+          "description": "Client editor role"
+        }
+      ]
+    }
+  },
+  "clients": [
+    {
+      "clientId": "test-client",
+      "name": "Test Client",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "protocol": "openid-connect"
+    }
+  ],
+  "users": [
+    {
+      "username": "alice",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "user"
+      ],
+      "clientRoles": {
+        "test-client": [
+          "editor"
+        ]
+      }
+    },
+    {
+      "username": "bob",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "admin",
+        "user"
+      ],
+      "clientRoles": {
+        "test-client": [
+          "manager",
+          "editor"
+        ]
+      }
+    }
+  ]
+}
