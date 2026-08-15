@@ -209,8 +209,15 @@ class KeycloakIntegrationTest {
         @GetMapping("/api/user")
         @PreAuthorize("hasRole('USER')")
         public Map<String, Object> userEndpoint(Authentication authentication) {
+            String username = authentication.getName();
+            if (authentication instanceof org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken jwtAuth) {
+                String preferred = jwtAuth.getToken().getClaimAsString("preferred_username");
+                if (preferred != null) {
+                    username = preferred;
+                }
+            }
             return Map.of(
-                    "username", authentication.getName(),
+                    "username", username,
                     "authorities", authentication.getAuthorities().stream()
                             .map(GrantedAuthority::getAuthority)
                             .collect(Collectors.toList())
