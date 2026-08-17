@@ -58,6 +58,7 @@ public class ProblemDetailAccessDeniedHandler implements AccessDeniedHandler {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN,
                 "The authenticated caller does not have the required role for this resource.");
         problem.setTitle("Forbidden");
+        problem.setInstance(java.net.URI.create(request.getRequestURI()));
         problem.setProperty("path", request.getRequestURI());
 
         response.setStatus(HttpStatus.FORBIDDEN.value());

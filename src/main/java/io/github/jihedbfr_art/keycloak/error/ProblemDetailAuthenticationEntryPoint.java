@@ -60,6 +60,7 @@ public class ProblemDetailAuthenticationEntryPoint implements AuthenticationEntr
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED,
                 "Authentication is required to access this resource.");
         problem.setTitle("Unauthorized");
+        problem.setInstance(java.net.URI.create(request.getRequestURI()));
         problem.setProperty("path", request.getRequestURI());
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());

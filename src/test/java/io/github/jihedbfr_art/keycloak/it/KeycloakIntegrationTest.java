@@ -122,7 +122,7 @@ class KeycloakIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect(jsonPath("$.status").value(401))
                 .andExpect(jsonPath("$.title").value("Unauthorized"))
-                .andExpect(jsonPath("$.path").value("/api/user"));
+                .andExpect(jsonPath("$.instance").value("/api/user"));
     }
 
     @Test
@@ -150,7 +150,7 @@ class KeycloakIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect(jsonPath("$.status").value(403))
                 .andExpect(jsonPath("$.title").value("Forbidden"))
-                .andExpect(jsonPath("$.path").value("/api/admin"));
+                .andExpect(jsonPath("$.instance").value("/api/admin"));
     }
 
     @Test
