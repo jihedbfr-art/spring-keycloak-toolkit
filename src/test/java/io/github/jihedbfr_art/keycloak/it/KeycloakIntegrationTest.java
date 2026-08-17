@@ -63,8 +63,7 @@ class KeycloakIntegrationTest {
     @Container
     private static final KeycloakContainer KEYCLOAK =
             new KeycloakContainer(KEYCLOAK_IMAGE)
-                    .withRealmImportFile("test-realm.json")
-                    .waitingFor(org.testcontainers.containers.wait.strategy.Wait.forHttp("/realms/master"));
+                    .withRealmImportFile("test-realm-realm.json");
 
     @Autowired
     private WebApplicationContext context;
