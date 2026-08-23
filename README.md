@@ -3,6 +3,8 @@
 [![JitPack](https://jitpack.io/v/jihedbfr-art/spring-keycloak-toolkit.svg)](https://jitpack.io/#jihedbfr-art/spring-keycloak-toolkit)
 [![CI](https://github.com/jihedbfr-art/spring-keycloak-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/jihedbfr-art/spring-keycloak-toolkit/actions)
 
+[Version française](./README.fr.md)
+
 Small Spring Boot auto-configuration for apps that sit behind Keycloak as a resource server.
 It fixes the one thing that trips up almost every Spring + Keycloak setup: Spring Security's
 default JWT converter has no idea that Keycloak puts roles under `realm_access.roles` and
