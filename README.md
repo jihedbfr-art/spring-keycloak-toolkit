@@ -64,8 +64,8 @@ mvn clean install
 
 ```xml
 <dependency>
-    <groupId>com.jihedapps</groupId>
-    <artifactId>spring-keycloak-toolkit</artifactId>
+    <groupId>io.github.jihedbfr-art</groupId>
+    <artifactId>keycloak-toolkit-spring-boot-starter</artifactId>
     <version>0.1.0</version>
 </dependency>
 ```
