@@ -3,6 +3,8 @@
 [![JitPack](https://jitpack.io/v/jihedbfr-art/spring-keycloak-toolkit.svg)](https://jitpack.io/#jihedbfr-art/spring-keycloak-toolkit)
 [![CI](https://github.com/jihedbfr-art/spring-keycloak-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/jihedbfr-art/spring-keycloak-toolkit/actions)
 
+[Version française](./README.fr.md)
+
 Small Spring Boot auto-configuration for apps that sit behind Keycloak as a resource server.
 It fixes the one thing that trips up almost every Spring + Keycloak setup: Spring Security's
 default JWT converter has no idea that Keycloak puts roles under `realm_access.roles` and
@@ -12,6 +14,10 @@ and `@PreAuthorize` silently do nothing because the token never produces any `RO
 I've hit this same wiring on every Keycloak-secured backend I've built over the last two years
 (realms, custom SPI authenticators, the works), and copy-pasted a version of this converter into
 each one. This is that code, finally pulled out, tested, and packaged so I stop rewriting it.
+
+**Quick install:** add the JitPack repository, then
+`com.github.jihedbfr-art:spring-keycloak-toolkit:v0.1.0` as a dependency — see [Install](#install)
+below for the full snippet and the local-build alternative.
 
 ## What it gives you
 
@@ -64,8 +70,8 @@ mvn clean install
 
 ```xml
 <dependency>
-    <groupId>com.jihedapps</groupId>
-    <artifactId>spring-keycloak-toolkit</artifactId>
+    <groupId>io.github.jihedbfr-art</groupId>
+    <artifactId>keycloak-toolkit-spring-boot-starter</artifactId>
     <version>0.1.0</version>
 </dependency>
 ```
