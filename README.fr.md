@@ -17,6 +17,10 @@ deux dernières années (realms, authenticators SPI custom, tout le lot), et j'a
 version de ce convertisseur dans chacun d'eux. C'est ce code, enfin extrait, testé et packagé pour
 que j'arrête de le réécrire.
 
+**Installation rapide :** ajoutez le dépôt JitPack, puis
+`com.github.jihedbfr-art:spring-keycloak-toolkit:v0.1.0` comme dépendance — voir
+[Installation](#installation) ci-dessous pour le bloc complet et l'alternative en build local.
+
 ## Ce que ça vous apporte
 
 - `KeycloakRealmRoleConverter` — lit les rôles realm et/ou client depuis le JWT et les mappe en
