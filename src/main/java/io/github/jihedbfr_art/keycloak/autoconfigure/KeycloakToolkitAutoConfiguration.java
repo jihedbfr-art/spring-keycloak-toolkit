@@ -66,28 +66,30 @@ public class KeycloakToolkitAutoConfiguration {
     /**
      * Provides the default {@link ProblemDetailAuthenticationEntryPoint} bean for RFC 7807 401 error formatting.
      *
-     * @param objectMapper the application Jackson {@link ObjectMapper}
+     * @param objectMapperProvider provider for the application Jackson {@link ObjectMapper}, falls back to default if absent
      * @return a configured {@link ProblemDetailAuthenticationEntryPoint}
      */
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "jihedailabs.keycloak", name = "problem-details-enabled",
             havingValue = "true", matchIfMissing = true)
-    public ProblemDetailAuthenticationEntryPoint problemDetailAuthenticationEntryPoint(ObjectMapper objectMapper) {
-        return new ProblemDetailAuthenticationEntryPoint(objectMapper);
+    public ProblemDetailAuthenticationEntryPoint problemDetailAuthenticationEntryPoint(
+            org.springframework.beans.factory.ObjectProvider<ObjectMapper> objectMapperProvider) {
+        return new ProblemDetailAuthenticationEntryPoint(objectMapperProvider.getIfAvailable(ObjectMapper::new));
     }
 
     /**
      * Provides the default {@link ProblemDetailAccessDeniedHandler} bean for RFC 7807 403 error formatting.
      *
-     * @param objectMapper the application Jackson {@link ObjectMapper}
+     * @param objectMapperProvider provider for the application Jackson {@link ObjectMapper}, falls back to default if absent
      * @return a configured {@link ProblemDetailAccessDeniedHandler}
      */
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "jihedailabs.keycloak", name = "problem-details-enabled",
             havingValue = "true", matchIfMissing = true)
-    public ProblemDetailAccessDeniedHandler problemDetailAccessDeniedHandler(ObjectMapper objectMapper) {
-        return new ProblemDetailAccessDeniedHandler(objectMapper);
+    public ProblemDetailAccessDeniedHandler problemDetailAccessDeniedHandler(
+            org.springframework.beans.factory.ObjectProvider<ObjectMapper> objectMapperProvider) {
+        return new ProblemDetailAccessDeniedHandler(objectMapperProvider.getIfAvailable(ObjectMapper::new));
     }
 }
