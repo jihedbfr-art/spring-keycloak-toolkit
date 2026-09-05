@@ -15,6 +15,10 @@ I've hit this same wiring on every Keycloak-secured backend I've built over the 
 (realms, custom SPI authenticators, the works), and copy-pasted a version of this converter into
 each one. This is that code, finally pulled out, tested, and packaged so I stop rewriting it.
 
+**Quick install:** add the JitPack repository, then
+`com.github.jihedbfr-art:spring-keycloak-toolkit:v0.1.0` as a dependency — see [Install](#install)
+below for the full snippet and the local-build alternative.
+
 ## What it gives you
 
 - `KeycloakRealmRoleConverter` — reads realm and/or client roles off the JWT and maps them to
@@ -66,8 +70,8 @@ mvn clean install
 
 ```xml
 <dependency>
-    <groupId>com.jihedapps</groupId>
-    <artifactId>spring-keycloak-toolkit</artifactId>
+    <groupId>io.github.jihedbfr-art</groupId>
+    <artifactId>keycloak-toolkit-spring-boot-starter</artifactId>
     <version>0.1.0</version>
 </dependency>
 ```
