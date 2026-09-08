@@ -18,7 +18,7 @@ version de ce convertisseur dans chacun d'eux. C'est ce code, enfin extrait, tes
 que j'arrête de le réécrire.
 
 **Installation rapide :** ajoutez le dépôt JitPack, puis
-`com.github.jihedbfr-art:spring-keycloak-toolkit:v0.1.0` comme dépendance — voir
+`com.github.jihedbfr-art:spring-keycloak-toolkit:v0.1.1` comme dépendance — voir
 [Installation](#installation) ci-dessous pour le bloc complet et l'alternative en build local.
 
 ## Ce que ça vous apporte
@@ -60,7 +60,7 @@ JitPack, puis récupérez le tag comme dépendance :
 <dependency>
     <groupId>com.github.jihedbfr-art</groupId>
     <artifactId>spring-keycloak-toolkit</artifactId>
-    <version>v0.1.0</version>
+    <version>v0.1.1</version>
 </dependency>
 ```
 
@@ -81,7 +81,7 @@ mvn clean install
 <dependency>
     <groupId>io.github.jihedbfr-art</groupId>
     <artifactId>keycloak-toolkit-spring-boot-starter</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
