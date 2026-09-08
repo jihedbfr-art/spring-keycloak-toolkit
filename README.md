@@ -16,7 +16,7 @@ I've hit this same wiring on every Keycloak-secured backend I've built over the 
 each one. This is that code, finally pulled out, tested, and packaged so I stop rewriting it.
 
 **Quick install:** add the JitPack repository, then
-`com.github.jihedbfr-art:spring-keycloak-toolkit:v0.1.0` as a dependency — see [Install](#install)
+`com.github.jihedbfr-art:spring-keycloak-toolkit:v0.1.1` as a dependency — see [Install](#install)
 below for the full snippet and the local-build alternative.
 
 ## What it gives you
@@ -56,7 +56,7 @@ then pull the tag as a dependency:
 <dependency>
     <groupId>com.github.jihedbfr-art</groupId>
     <artifactId>spring-keycloak-toolkit</artifactId>
-    <version>v0.1.0</version>
+    <version>v0.1.1</version>
 </dependency>
 ```
 
@@ -77,7 +77,7 @@ mvn clean install
 <dependency>
     <groupId>io.github.jihedbfr-art</groupId>
     <artifactId>keycloak-toolkit-spring-boot-starter</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
