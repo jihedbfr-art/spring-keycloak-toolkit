@@ -60,6 +60,11 @@ then pull the tag as a dependency:
 </dependency>
 ```
 
+Note: JitPack derives its `groupId:artifactId` from the GitHub username/repo name above, which
+differs from this project's own Maven coordinates (`io.github.jihedbfr-art:keycloak-toolkit-spring-boot-starter`)
+used once it's built and installed locally, or published to Maven Central. Both are correct for
+their respective install path — just don't mix the two.
+
 Or build and install locally:
 
 ```bash
@@ -135,4 +140,4 @@ Things I want to add once this has seen a bit more real use rather than guessing
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Apache License 2.0 — see [LICENSE](LICENSE).

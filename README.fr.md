@@ -64,6 +64,11 @@ JitPack, puis récupérez le tag comme dépendance :
 </dependency>
 ```
 
+Remarque : JitPack déduit son `groupId:artifactId` du nom d'utilisateur/dépôt GitHub ci-dessus,
+ce qui diffère des coordonnées Maven propres au projet (`io.github.jihedbfr-art:keycloak-toolkit-spring-boot-starter`)
+utilisées une fois construit et installé localement, ou publié sur Maven Central. Les deux sont
+correctes pour leur méthode d'installation respective — ne pas les mélanger.
+
 Ou en build et install local :
 
 ```bash
@@ -140,4 +145,4 @@ deviner à l'avance :
 
 ## Licence
 
-MIT — voir [LICENSE](LICENSE).
+Apache License 2.0 — voir [LICENSE](LICENSE).
