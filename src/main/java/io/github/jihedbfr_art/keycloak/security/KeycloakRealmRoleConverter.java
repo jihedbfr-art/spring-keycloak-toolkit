@@ -69,15 +69,13 @@ public class KeycloakRealmRoleConverter implements Converter<Jwt, Collection<Gra
         Set<String> roles = new LinkedHashSet<>();
 
         if (realmRolesEnabled) {
-            roles.addAll(rolesFrom(jwt.getClaimAsMap(REALM_ACCESS_CLAIM)));
+            roles.addAll(rolesFrom(accessFrom(jwt, REALM_ACCESS_CLAIM)));
         }
 
         if (resourceRolesEnabled && resourceId != null && !resourceId.isBlank()) {
-            Map<String, Object> resourceAccess = jwt.getClaimAsMap(RESOURCE_ACCESS_CLAIM);
+            Map<?, ?> resourceAccess = accessFrom(jwt, RESOURCE_ACCESS_CLAIM);
             if (resourceAccess != null && resourceAccess.get(resourceId) instanceof Map<?, ?> clientAccess) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> clientAccessMap = (Map<String, Object>) clientAccess;
-                roles.addAll(rolesFrom(clientAccessMap));
+                roles.addAll(rolesFrom(clientAccess));
             }
         }
 
@@ -92,7 +90,12 @@ public class KeycloakRealmRoleConverter implements Converter<Jwt, Collection<Gra
      * @param access the access claim map containing a {@code roles} list
      * @return a collection of role names, or an empty set if absent
      */
-    private Collection<String> rolesFrom(Map<String, Object> access) {
+    private Map<?, ?> accessFrom(Jwt jwt, String claimName) {
+        Object claim = jwt.getClaims().get(claimName);
+        return claim instanceof Map<?, ?> access ? access : null;
+    }
+
+    private Collection<String> rolesFrom(Map<?, ?> access) {
         if (access == null || !(access.get(ROLES_CLAIM) instanceof List<?> roles)) {
             return Collections.emptySet();
         }

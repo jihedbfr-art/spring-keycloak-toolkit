@@ -24,6 +24,7 @@ below for the full snippet and the local-build alternative.
 - `KeycloakRealmRoleConverter` — reads realm and/or client roles off the JWT and maps them to
   `SimpleGrantedAuthority` with a configurable prefix (defaults to `ROLE_`, matching Spring
   Security's own convention).
+  Malformed `realm_access` or `resource_access` claims are ignored; valid roles in the other claim still apply.
 - Auto-configuration that registers a `JwtAuthenticationConverter` wired to the role converter,
   so `spring-security-oauth2-resource-server` picks it up with zero extra config in the common case.
 - `ProblemDetailAuthenticationEntryPoint` / `ProblemDetailAccessDeniedHandler` — RFC 7807 JSON

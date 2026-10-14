@@ -26,6 +26,7 @@ que j'arrête de le réécrire.
 - `KeycloakRealmRoleConverter` — lit les rôles realm et/ou client depuis le JWT et les mappe en
   `SimpleGrantedAuthority` avec un préfixe configurable (par défaut `ROLE_`, conforme à la
   convention de Spring Security elle-même).
+  Un claim `realm_access` ou `resource_access` malformé est ignoré ; les rôles valides de l'autre claim restent pris en compte.
 - Une autoconfiguration qui enregistre un `JwtAuthenticationConverter` câblé au convertisseur de
   rôles, pour que `spring-security-oauth2-resource-server` le prenne en compte sans configuration
   supplémentaire dans le cas courant.

@@ -98,4 +98,30 @@ class KeycloakRealmRoleConverterTest {
                 .extracting(GrantedAuthority::getAuthority)
                 .containsExactlyInAnyOrder("APP-ADMIN", "VIEWER");
     }
+
+    @Test
+    void ignoresMalformedAccessClaims() {
+        Jwt jwt = jwtWith(Map.of(
+                "realm_access", java.util.List.of("admin"),
+                "resource_access", "unexpected"
+        ));
+
+        KeycloakRealmRoleConverter converter = new KeycloakRealmRoleConverter(true, true, "ROLE_", "my-client");
+
+        assertThat(converter.convert(jwt)).isEmpty();
+    }
+
+    @Test
+    void keepsValidResourceRolesWhenRealmClaimIsMalformed() {
+        Jwt jwt = jwtWith(Map.of(
+                "realm_access", "unexpected",
+                "resource_access", Map.of("my-client", Map.of("roles", java.util.List.of("editor")))
+        ));
+
+        KeycloakRealmRoleConverter converter = new KeycloakRealmRoleConverter(true, true, "ROLE_", "my-client");
+
+        assertThat(converter.convert(jwt))
+                .extracting(GrantedAuthority::getAuthority)
+                .containsExactly("ROLE_EDITOR");
+    }
 }
