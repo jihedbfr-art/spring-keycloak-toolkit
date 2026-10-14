@@ -90,12 +90,16 @@ public class KeycloakRealmRoleConverter implements Converter<Jwt, Collection<Gra
      * Extracts the string list of roles from an access claim map.
      *
      * @param access the access claim map containing a {@code roles} list
-     * @return a collection of role names, or an empty set if absent
+     * @return non-blank string role names, or an empty set if absent
      */
     private Collection<String> rolesFrom(Map<String, Object> access) {
         if (access == null || !(access.get(ROLES_CLAIM) instanceof List<?> roles)) {
             return Collections.emptySet();
         }
-        return roles.stream().map(String::valueOf).collect(Collectors.toSet());
+        return roles.stream()
+                .filter(String.class::isInstance)
+                .map(String.class::cast)
+                .filter(role -> !role.isBlank())
+                .collect(Collectors.toSet());
     }
 }
