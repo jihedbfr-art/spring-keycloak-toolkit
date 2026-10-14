@@ -31,6 +31,10 @@ below for the full snippet and the local-build alternative.
   filter chain automatically (every app matches endpoints differently), just exposed as beans you
   plug into `exceptionHandling(...)`.
 
+  The 401 entry point adds `WWW-Authenticate: Bearer` when no challenge is already set,
+  preserving an existing challenge and keeping exception messages out of the JSON response.
+  It uses a generic challenge without OAuth error attributes; see [RFC 6750, section 3](https://www.rfc-editor.org/rfc/rfc6750#section-3).
+
 ## What it deliberately does not do
 
 It does not configure your `SecurityFilterChain`, does not touch endpoint matchers, and does not

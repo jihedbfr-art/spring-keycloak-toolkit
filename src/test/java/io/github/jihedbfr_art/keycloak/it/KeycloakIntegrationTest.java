@@ -1,5 +1,7 @@
 package io.github.jihedbfr_art.keycloak.it;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -119,6 +121,7 @@ class KeycloakIntegrationTest {
     void protectedEndpointWithoutTokenReturns401ProblemDetail() throws Exception {
         mockMvc.perform(get("/api/user"))
                 .andExpect(status().isUnauthorized())
+                .andExpect(header().string(HttpHeaders.WWW_AUTHENTICATE, "Bearer"))
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect(jsonPath("$.status").value(401))
                 .andExpect(jsonPath("$.title").value("Unauthorized"))

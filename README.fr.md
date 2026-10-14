@@ -34,6 +34,10 @@ que j'arrête de le réécrire.
   automatiquement dans votre filter chain (chaque application découpe ses endpoints différemment),
   juste exposés comme des beans que vous branchez dans `exceptionHandling(...)`.
 
+  Le point d'entrée 401 ajoute `WWW-Authenticate: Bearer` si aucun challenge n'est déjà défini.
+  Il conserve un challenge existant et n'expose pas le message de l'exception dans le JSON.
+  Le challenge reste générique, sans attributs d'erreur OAuth ; voir la [RFC 6750, section 3](https://www.rfc-editor.org/rfc/rfc6750#section-3).
+
 ## Ce que ça ne fait délibérément pas
 
 Ça ne configure pas votre `SecurityFilterChain`, ça ne touche pas aux matchers d'endpoints, et ça

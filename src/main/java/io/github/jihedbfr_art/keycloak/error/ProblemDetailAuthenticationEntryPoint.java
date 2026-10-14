@@ -6,6 +6,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.AuthenticationException;
@@ -64,6 +65,9 @@ public class ProblemDetailAuthenticationEntryPoint implements AuthenticationEntr
         problem.setProperty("path", request.getRequestURI());
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        if (!response.containsHeader(HttpHeaders.WWW_AUTHENTICATE)) {
+            response.setHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer");
+        }
         response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
         objectMapper.writeValue(response.getWriter(), problem);
     }
