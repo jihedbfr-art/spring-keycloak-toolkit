@@ -128,7 +128,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http,
 
 ## Compatibilité
 
-Le projet cible Spring Boot 4.1.0 et Java 17, comme indiqué dans `pom.xml` et la matrice CI. Les autres versions de Spring Boot ne sont pas couvertes par cette compilation.
+Le `pom.xml` cible Spring Boot 4.1.0 et Java 17. La CI compile et teste aussi Spring Boot 4.0.7 avec Java 17 et 21, Spring Boot 4.1.0 avec Java 21, ainsi que Spring Boot 3.5.16 avec Java 17.
 
 ## Roadmap
 
