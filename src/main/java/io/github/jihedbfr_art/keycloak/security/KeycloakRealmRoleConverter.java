@@ -84,17 +84,18 @@ public class KeycloakRealmRoleConverter implements Converter<Jwt, Collection<Gra
                 .collect(Collectors.toUnmodifiableSet());
     }
 
+    /** Returns a claim only when it has the expected access-object shape. */
+    private Map<?, ?> accessFrom(Jwt jwt, String claimName) {
+        Object claim = jwt.getClaims().get(claimName);
+        return claim instanceof Map<?, ?> access ? access : null;
+    }
+
     /**
      * Extracts the string list of roles from an access claim map.
      *
      * @param access the access claim map containing a {@code roles} list
      * @return a collection of role names, or an empty set if absent
      */
-    private Map<?, ?> accessFrom(Jwt jwt, String claimName) {
-        Object claim = jwt.getClaims().get(claimName);
-        return claim instanceof Map<?, ?> access ? access : null;
-    }
-
     private Collection<String> rolesFrom(Map<?, ?> access) {
         if (access == null || !(access.get(ROLES_CLAIM) instanceof List<?> roles)) {
             return Collections.emptySet();
