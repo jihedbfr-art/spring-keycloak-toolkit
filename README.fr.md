@@ -27,6 +27,7 @@ que j'arrête de le réécrire.
   `SimpleGrantedAuthority` avec un préfixe configurable (par défaut `ROLE_`, conforme à la
   convention de Spring Security elle-même). Les entrées non textuelles ou vides de la liste
   `roles` sont ignorées.
+  Un claim `realm_access` ou `resource_access` malformé est ignoré ; les rôles valides de l'autre claim restent pris en compte.
 - Une autoconfiguration qui enregistre un `JwtAuthenticationConverter` câblé au convertisseur de
   rôles, pour que `spring-security-oauth2-resource-server` le prenne en compte sans configuration
   supplémentaire dans le cas courant.
