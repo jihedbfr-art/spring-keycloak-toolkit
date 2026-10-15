@@ -100,6 +100,20 @@ class KeycloakRealmRoleConverterTest {
     }
 
     @Test
+    void ignoresNonStringAndBlankRoleValues() {
+        Jwt jwt = jwtWith(Map.of(
+                "realm_access", Map.of("roles", java.util.Arrays.asList("viewer", 123, true, null, " ")),
+                "resource_access", Map.of("my-client", Map.of("roles", java.util.List.of("editor", 456)))
+        ));
+
+        KeycloakRealmRoleConverter converter = new KeycloakRealmRoleConverter(true, true, "ROLE_", "my-client");
+
+        assertThat(converter.convert(jwt))
+                .extracting(GrantedAuthority::getAuthority)
+                .containsExactlyInAnyOrder("ROLE_VIEWER", "ROLE_EDITOR");
+    }
+
+    @Test
     void ignoresMalformedAccessClaims() {
         Jwt jwt = jwtWith(Map.of(
                 "realm_access", java.util.List.of("admin"),

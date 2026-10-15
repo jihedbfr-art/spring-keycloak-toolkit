@@ -25,7 +25,8 @@ que j'arrête de le réécrire.
 
 - `KeycloakRealmRoleConverter` — lit les rôles realm et/ou client depuis le JWT et les mappe en
   `SimpleGrantedAuthority` avec un préfixe configurable (par défaut `ROLE_`, conforme à la
-  convention de Spring Security elle-même).
+  convention de Spring Security elle-même). Les entrées non textuelles ou vides de la liste
+  `roles` sont ignorées.
   Un claim `realm_access` ou `resource_access` malformé est ignoré ; les rôles valides de l'autre claim restent pris en compte.
 - Une autoconfiguration qui enregistre un `JwtAuthenticationConverter` câblé au convertisseur de
   rôles, pour que `spring-security-oauth2-resource-server` le prenne en compte sans configuration
@@ -34,6 +35,10 @@ que j'arrête de le réécrire.
   RFC 7807 pour les 401/403 au lieu de la réponse vide par défaut de Spring Security. Pas câblés
   automatiquement dans votre filter chain (chaque application découpe ses endpoints différemment),
   juste exposés comme des beans que vous branchez dans `exceptionHandling(...)`.
+
+  Le point d'entrée 401 ajoute `WWW-Authenticate: Bearer` si aucun challenge n'est déjà défini.
+  Il conserve un challenge existant et n'expose pas le message de l'exception dans le JSON.
+  Le challenge reste générique, sans attributs d'erreur OAuth ; voir la [RFC 6750, section 3](https://www.rfc-editor.org/rfc/rfc6750#section-3).
 
 ## Ce que ça ne fait délibérément pas
 
@@ -91,8 +96,8 @@ mvn clean install
 Pointez-le vers l'ID de votre client Keycloak et c'est réglé pour le mapping des rôles :
 
 ```yaml
-jihedapps:
-  keycloak-toolkit:
+jihedailabs:
+  keycloak:
     resource-id: my-client       # le client Keycloak dont vous voulez les rôles resource_access
     resource-roles-enabled: true
     realm-roles-enabled: true    # activé par défaut
@@ -121,17 +126,15 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http,
 
 | Propriété | Défaut | Ce que ça fait |
 |---|---|---|
-| `jihedapps.keycloak-toolkit.realm-roles-enabled` | `true` | Lit `realm_access.roles` |
-| `jihedapps.keycloak-toolkit.resource-roles-enabled` | `true` | Lit `resource_access.<resource-id>.roles` |
-| `jihedapps.keycloak-toolkit.resource-id` | *(aucun)* | ID du client Keycloak pour les rôles resource ; ignoré si vide |
-| `jihedapps.keycloak-toolkit.role-prefix` | `ROLE_` | Préfixe appliqué devant chaque rôle |
-| `jihedapps.keycloak-toolkit.problem-details-enabled` | `true` | Enregistre les beans ProblemDetail entry point / handler |
+| `jihedailabs.keycloak.realm-roles-enabled` | `true` | Lit `realm_access.roles` |
+| `jihedailabs.keycloak.resource-roles-enabled` | `true` | Lit `resource_access.<resource-id>.roles` |
+| `jihedailabs.keycloak.resource-id` | *(aucun)* | ID du client Keycloak pour les rôles resource ; ignoré si vide |
+| `jihedailabs.keycloak.role-prefix` | `ROLE_` | Préfixe appliqué devant chaque rôle |
+| `jihedailabs.keycloak.problem-details-enabled` | `true` | Enregistre les beans ProblemDetail entry point / handler |
 
 ## Compatibilité
 
-Construit et testé avec Spring Boot 3.2.5 / Spring Security 6 / Java 17, ce que je fais tourner
-en production. Les versions 3.x plus anciennes de Spring Boot fonctionneront probablement aussi
-car l'API d'autoconfiguration utilisée ici est stable, mais je ne les ai pas testées.
+Le `pom.xml` cible Spring Boot 4.1.0 et Java 17. La CI compile et teste aussi Spring Boot 4.0.7 avec Java 17 et 21, Spring Boot 4.1.0 avec Java 21, ainsi que Spring Boot 3.5.16 avec Java 17.
 
 ## Roadmap
 
