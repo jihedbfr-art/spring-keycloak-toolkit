@@ -86,8 +86,8 @@ mvn clean install
 Point it at your Keycloak client ID and you're done for role mapping:
 
 ```yaml
-jihedapps:
-  keycloak-toolkit:
+jihedailabs:
+  keycloak:
     resource-id: my-client       # the Keycloak client whose resource_access roles you want
     resource-roles-enabled: true
     realm-roles-enabled: true    # on by default
@@ -116,17 +116,15 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http,
 
 | Property | Default | What it does |
 |---|---|---|
-| `jihedapps.keycloak-toolkit.realm-roles-enabled` | `true` | Read `realm_access.roles` |
-| `jihedapps.keycloak-toolkit.resource-roles-enabled` | `true` | Read `resource_access.<resource-id>.roles` |
-| `jihedapps.keycloak-toolkit.resource-id` | *(none)* | Keycloak client ID for resource roles; skipped if blank |
-| `jihedapps.keycloak-toolkit.role-prefix` | `ROLE_` | Prefix applied before each role |
-| `jihedapps.keycloak-toolkit.problem-details-enabled` | `true` | Register the ProblemDetail entry point / handler beans |
+| `jihedailabs.keycloak.realm-roles-enabled` | `true` | Read `realm_access.roles` |
+| `jihedailabs.keycloak.resource-roles-enabled` | `true` | Read `resource_access.<resource-id>.roles` |
+| `jihedailabs.keycloak.resource-id` | *(none)* | Keycloak client ID for resource roles; skipped if blank |
+| `jihedailabs.keycloak.role-prefix` | `ROLE_` | Prefix applied before each role |
+| `jihedailabs.keycloak.problem-details-enabled` | `true` | Register the ProblemDetail entry point / handler beans |
 
 ## Compatibility
 
-Built and tested against Spring Boot 3.2.5 / Spring Security 6 / Java 17, which is what I run in
-production. Older Spring Boot 3.x lines will likely work since the autoconfigure API in scope here
-has been stable, but I haven't tested them.
+The `pom.xml` targets Spring Boot 4.1.0 and Java 17. CI also builds and tests Spring Boot 4.0.7 with Java 17 and 21, Spring Boot 4.1.0 with Java 21, and Spring Boot 3.5.16 with Java 17.
 
 ## Roadmap
 

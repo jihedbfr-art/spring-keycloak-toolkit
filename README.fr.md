@@ -90,8 +90,8 @@ mvn clean install
 Pointez-le vers l'ID de votre client Keycloak et c'est réglé pour le mapping des rôles :
 
 ```yaml
-jihedapps:
-  keycloak-toolkit:
+jihedailabs:
+  keycloak:
     resource-id: my-client       # le client Keycloak dont vous voulez les rôles resource_access
     resource-roles-enabled: true
     realm-roles-enabled: true    # activé par défaut
@@ -120,17 +120,15 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http,
 
 | Propriété | Défaut | Ce que ça fait |
 |---|---|---|
-| `jihedapps.keycloak-toolkit.realm-roles-enabled` | `true` | Lit `realm_access.roles` |
-| `jihedapps.keycloak-toolkit.resource-roles-enabled` | `true` | Lit `resource_access.<resource-id>.roles` |
-| `jihedapps.keycloak-toolkit.resource-id` | *(aucun)* | ID du client Keycloak pour les rôles resource ; ignoré si vide |
-| `jihedapps.keycloak-toolkit.role-prefix` | `ROLE_` | Préfixe appliqué devant chaque rôle |
-| `jihedapps.keycloak-toolkit.problem-details-enabled` | `true` | Enregistre les beans ProblemDetail entry point / handler |
+| `jihedailabs.keycloak.realm-roles-enabled` | `true` | Lit `realm_access.roles` |
+| `jihedailabs.keycloak.resource-roles-enabled` | `true` | Lit `resource_access.<resource-id>.roles` |
+| `jihedailabs.keycloak.resource-id` | *(aucun)* | ID du client Keycloak pour les rôles resource ; ignoré si vide |
+| `jihedailabs.keycloak.role-prefix` | `ROLE_` | Préfixe appliqué devant chaque rôle |
+| `jihedailabs.keycloak.problem-details-enabled` | `true` | Enregistre les beans ProblemDetail entry point / handler |
 
 ## Compatibilité
 
-Construit et testé avec Spring Boot 3.2.5 / Spring Security 6 / Java 17, ce que je fais tourner
-en production. Les versions 3.x plus anciennes de Spring Boot fonctionneront probablement aussi
-car l'API d'autoconfiguration utilisée ici est stable, mais je ne les ai pas testées.
+Le `pom.xml` cible Spring Boot 4.1.0 et Java 17. La CI compile et teste aussi Spring Boot 4.0.7 avec Java 17 et 21, Spring Boot 4.1.0 avec Java 21, ainsi que Spring Boot 3.5.16 avec Java 17.
 
 ## Roadmap
 
