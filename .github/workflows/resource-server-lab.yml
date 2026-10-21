@@ -1,0 +1,52 @@
+name: Resource server lab
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ["17", "21"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: temurin
+          cache: maven
+      - name: Install the toolkit for its local consumer
+        run: mvn -B install -DskipTests
+      - name: Verify signed-JWT and Keycloak HTTP cases
+        run: mvn -B -f examples/resource-server/pom.xml clean verify
+      - name: Start the isolated demonstration realm
+        working-directory: examples/resource-server
+        run: docker compose -p toolkit-iam-lab-ci up -d
+      - name: Exercise the packaged JAR
+        working-directory: examples/resource-server
+        shell: bash
+        run: |
+          java -jar target/resource-server-lab-0.1.0-SNAPSHOT.jar > target/packaged-server.log 2>&1 &
+          api_pid=$!
+          trap 'kill "$api_pid" 2>/dev/null || true' EXIT
+          python smoke.py
+      - name: Stop the demonstration realm
+        if: always()
+        working-directory: examples/resource-server
+        run: docker compose -p toolkit-iam-lab-ci down
+      - name: Retain failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resource-server-lab-jdk-${{ matrix.java }}
+          path: |
+            examples/resource-server/target/surefire-reports/
+            examples/resource-server/target/packaged-server.log
