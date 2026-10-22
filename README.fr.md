@@ -136,6 +136,10 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http,
 
 Le `pom.xml` cible Spring Boot 4.1.0 et Java 17. La CI compile et teste aussi Spring Boot 4.0.7 avec Java 17 et 21, Spring Boot 4.1.0 avec Java 21, ainsi que Spring Boot 3.5.16 avec Java 17.
 
+## Laboratoire exécutable
+
+Le [laboratoire de frontières JWT](examples/resource-server/README.fr.md) fournit une API autonome, 19 tests HTTP et six contrôles du JAR lancé. Il sépare validation cryptographique, issuer/audience et rôles, avec des comptes de service Keycloak synthétiques. Prérequis, commandes EN/FR et limites sont documentés dans le laboratoire.
+
 ## Roadmap
 
 Ce que je veux ajouter une fois que ce projet aura vu un peu plus d'usage réel plutôt que de
